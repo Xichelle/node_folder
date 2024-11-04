@@ -1,5 +1,6 @@
 // Import the express library and assign it to a variable
 import express from 'express'
+import fetch from 'node-fetch'
 
 // Create an instance of an express application 
 const app = express()
@@ -12,6 +13,23 @@ app.get('/', (req, res) => {
   res.send("This is a virtual cave. Choose your path")
 })
 
+// Example of an application route that makes a request to another server
+app.get('/advice', async (req, res) => {
+    // Make a request to another wbesite and wait for a response
+    const response = await fetch('https://api.adviceslip.com/advice')
+  
+    // Read the response
+    const body = await response.json()
+  
+    // Print the repsonse body to the console
+    console.log(body)
+  
+    // Get the advice text string from the response body object
+    const advice = body.slip.advice
+  
+    res.json({ data: advice })
+  })
+
 const branches = {
 	branch37: "You see 333 bats hanging on the top of the cave. Your heartbeat is so loud that all the bats wake up. The moment you looked into their eyes, you realized this might be the wrong way",
 	branch8: "You start feeling the ground is getting wet, water drips on the ground and on your body. You saw the light in front of you, but another footstep on the wet ground behind you immeditely caught your ears.",
@@ -21,11 +39,16 @@ const branches = {
 }
 
 app.get('/branches', (req, res) => {
-    const branchName = req.query.branch; // Access the genre name
+    const branchName = req.query.branch; // Access the branch name
     if (!branches[branchName]) {
-	    res.send(`You've reached the boundary of this cave, find another way`);
+        res.json({ message: "You've reached the boundary of this cave, find another way" });
+    } else {
+        res.json({
+            branch: branchName,
+            description: branches[branchName],
+            message: `If you want to leave a note, proceed to '/branches/${branchName}/leave-a-note'`
+        });
     }
-    res.send(`branch: ${branchName}, ${branches[branchName]}. If you want to leave a note, proceed to '/branches/${branchName}/leave-a-note'`);
 });
 
 // Route to leave a note in a specific branch
