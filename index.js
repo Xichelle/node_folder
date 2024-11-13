@@ -1,12 +1,18 @@
 // Import the express library and assign it to a variable
 import express from 'express'
 import fetch from 'node-fetch'
+import cors from 'cors'
 
 // Create an instance of an express application 
 const app = express()
 
 // Set the port the application will be running on
 const port = process.env.PORT || 3001
+
+
+app.use(cors({
+  origin: '*'
+}));
 
 // Set up a response for the root path of the application
 app.get('/', (req, res) => {
@@ -31,8 +37,8 @@ app.get('/advice', async (req, res) => {
   })
 
 const branches = {
-	branch37: "You see 333 bats hanging on the top of the cave. Your heartbeat is so loud that all the bats wake up. The moment you looked into their eyes, you realized this might be the wrong way",
-	branch8: "You start feeling the ground is getting wet, water drips on the ground and on your body. You saw the light in front of you, but another footstep on the wet ground behind you immeditely caught your ears.",
+	  branch37: "You see 333 bats hanging on the top of the cave. Your heartbeat is so loud that all the bats wake up. The moment you looked into their eyes, you realized this might be the wrong way",
+	  branch8: "You start feeling the ground is getting wet, water drips on the ground and on your body. You saw the light in front of you, but another footstep on the wet ground behind you immeditely caught your ears.",
     branch501: "You feel the wind blowing in the cave, that makes you feel safe, because that means this branch may lead to the outside. You start running, and hoping you can escape from this nightmare. Until you run into a soft and warm surface that is breathing...",
     branch1: "You want to leave this place that you have no idea why you are here. But when you look back, the entrance is already disappear like you've walking in the cave for a long time.",
     branch296: "You stay in this place, feeling exhausted.You have no idea why you are here, but you feel like you have been here for so many times. You fall asleep, in the dream you saw yourself died again and again, struggling in this place. You realized that there's no way out. It's virtual, there's only one true exit, right?"
@@ -46,7 +52,6 @@ app.get('/branches', (req, res) => {
         res.json({
             branch: branchName,
             description: branches[branchName],
-            message: `If you want to leave a note, proceed to '/branches/${branchName}/leave-a-note'`
         });
     }
 });
